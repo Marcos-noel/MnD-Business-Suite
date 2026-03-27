@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: mnd_postgres
+    environment:
+      POSTGRES_DB: mnd
+      POSTGRES_USER: mnd
+      POSTGRES_PASSWORD: mndpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - mnd_pgdata:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+    container_name: mnd_redis
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    container_name: mnd_backend
+    environment:
+      ENVIRONMENT: production
+      DEBUG: "false"
+      ALLOWED_ORIGINS: "http://localhost:3000"
+      DATABASE_URL: "postgresql+asyncpg://mnd:mndpassword@postgres:5432/mnd"
+      REDIS_URL: "redis://redis:6379/0"
+      JWT_SECRET_KEY: "CHANGE_ME_IN_PROD"
+      COOKIE_SECURE: "false"
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8000:8000"
+
+  worker:
+    build: ./backend
+    container_name: mnd_worker
+    environment:
+      ENVIRONMENT: production
+      DEBUG: "false"
+      DATABASE_URL: "postgresql+asyncpg://mnd:mndpassword@postgres:5432/mnd"
+      REDIS_URL: "redis://redis:6379/0"
+      JWT_SECRET_KEY: "CHANGE_ME_IN_PROD"
+    depends_on:
+      - backend
+      - redis
+    command: ["python", "-m", "app.workers.worker"]
+
+  frontend:
+    build: ./frontend
+    container_name: mnd_frontend
+    environment:
+      BACKEND_URL: "http://backend:8000"
+      COOKIE_SECURE: "false"
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+volumes:
+  mnd_pgdata:
