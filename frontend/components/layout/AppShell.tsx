@@ -26,9 +26,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <TopNav onOpenMenu={() => setMobileMenuOpen(true)} />
           <motion.main
             key="page"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.22, ease: [0.2, 0.8, 0.2, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.08, ease: [0.2, 0.8, 0.2, 1] }}
             className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain pb-[calc(6.5rem+env(safe-area-inset-bottom))] lg:pb-0"
           >
             {children}
