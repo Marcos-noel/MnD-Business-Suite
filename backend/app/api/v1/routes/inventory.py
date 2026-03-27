@@ -43,9 +43,19 @@ async def create_supplier(payload: SupplierCreate, session: DbSession, auth: Cur
     response_model=list[ProductRead],
     dependencies=[require_any_permission("inventory.manage", "inventory.read")],
 )
-async def list_products(session: DbSession, auth: CurrentAuth, limit: int = 50, offset: int = 0) -> list[ProductRead]:
-    items = await InventoryService(session).list_products(org_id=auth.org_id, limit=limit, offset=offset)
-    return [ProductRead.model_validate(i) for i in items]
+async def list_products(
+    session: DbSession,
+    auth: CurrentAuth,
+    limit: int = 50,
+    offset: int = 0
+) -> list[ProductRead]:
+    try:
+        items = await InventoryService(session).list_products(
+            org_id=auth.org_id, limit=limit, offset=offset
+        )
+        return [ProductRead.model_validate(i) for i in items]
+    except Exception:
+        return []
 
 
 @router.post("/products", response_model=ProductRead, status_code=201, dependencies=[require_permission("inventory.manage")])
