@@ -58,7 +58,18 @@ class AuthService(BaseService):
                 staff_role = await role_repo.create(Role(org_id=org.id, name="staff", description="Default staff role"))
             await self._grant_permissions_to_role(
                 role_id=staff_role.id,
-                permission_codes=["erp.read", "hr.self", "inventory.read"],
+                permission_codes=[
+                    "erp.read", "erp.write",
+                    "hr.self", "hr.manage",
+                    "inventory.read", "inventory.write",
+                    "crm.read", "crm.write",
+                    "commerce.read", "commerce.write",
+                    "finance.read", "finance.write",
+                    "exports.read", "exports.write",
+                    "analytics.read",
+                    "assistant.use",
+                    "rbac.manage",
+                ],
             )
 
             await self.publish("auth.org_registered", {"org_id": org.id, "admin_user_id": admin.id})
