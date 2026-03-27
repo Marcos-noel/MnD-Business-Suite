@@ -17,7 +17,9 @@ from app.models.billing.subscription import (
     PlanType,
     SubscriptionStatus,
 )
+from app.schemas.tenancy.modules import OrgModuleRead, OrgModuleUpdate
 from app.services.billing.stripe_service import StripeBillingService, SubscriptionService
+from app.services.tenancy.module_service import ModuleService
 
 
 router = APIRouter(prefix="/billing", tags=["billing"])
@@ -192,3 +194,22 @@ async def stripe_webhook(request: Request):
 
     result = await sub_service.handle_webhook(event)
     return result
+
+
+# Module management endpoints (from original billing.py)
+@router.get("/modules", response_model=list[OrgModuleRead])
+async def list_modules(session: DbSession, auth: CurrentAuth) -> list[OrgModuleRead]:
+    """List all modules for the organization."""
+    rows = await ModuleService(session).list_modules(org_id=auth.org_id)
+    return [OrgModuleRead(**r) for r in rows]
+
+
+@router.patch("/modules/{module_code}", response_model=OrgModuleRead)
+async def update_module(
+    module_code: str, payload: OrgModuleUpdate, session: DbSession, auth: CurrentAuth
+) -> OrgModuleRead:
+    """Enable or disable a module for the organization."""
+    row = await ModuleService(session).set_enabled(
+        org_id=auth.org_id, module_code=module_code, is_enabled=payload.is_enabled
+    )
+    return OrgModuleRead(**row)
