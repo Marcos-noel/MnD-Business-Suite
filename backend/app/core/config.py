@@ -33,6 +33,14 @@ class Settings(BaseSettings):
 
     restricted_export_countries: str = ""
 
+    # Stripe configuration
+    stripe_secret_key: str = ""
+    stripe_publishable_key: str = ""
+    stripe_webhook_secret: str = ""
+
+    # Frontend URL for redirects
+    frontend_url: str = "http://localhost:3000"
+
     cookie_secure: bool = False
     cookie_samesite: str = "lax"
     allow_public_registration: bool = True
