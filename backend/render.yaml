@@ -3,7 +3,7 @@ services:
     name: mnd-backend
     rootDir: backend
     runtime: python
-    pythonVersion: 3.12
+    pythonVersion: "3.11"
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
     env:
@@ -13,3 +13,5 @@ services:
         value: "false"
       - key: ALLOWED_ORIGINS
         value: "*"
+      - key: PYTHON_VERSION
+        value: "3.11"
