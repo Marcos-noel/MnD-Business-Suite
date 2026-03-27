@@ -1,0 +1,13 @@
+[project]
+name = "mnd-business-suite-backend"
+version = "0.1.0"
+description = "MnD Business Suite Backend"
+
+[project.scripts]
+app = "uvicorn:main"
+
+[tool.uvicorn]
+app = "app.main:app"
+host = "0.0.0.0"
+port = 8000
+reload = false
