@@ -9,7 +9,7 @@ import { IconButton } from "@/components/ui/IconButton";
 import { useMe } from "@/lib/me";
 import { getNavItems } from "@/components/layout/nav";
 import { Input } from "@/components/ui/Input";
-import { IconBell, IconProfile } from "@/components/icons/AppIcons";
+import { IconBell, IconAdmin, IconProfile } from "@/components/icons/AppIcons";
 
 export function Sidebar({
   collapsed,

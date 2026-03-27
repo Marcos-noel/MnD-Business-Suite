@@ -374,10 +374,14 @@ export default function DashboardPage() {
 
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  }, []);
+    let timeGreeting = "Good morning";
+    if (hour >= 12 && hour < 17) timeGreeting = "Good afternoon";
+    else if (hour >= 17) timeGreeting = "Good evening";
+    
+    // Add user's first name to the greeting
+    const userName = meQ.data?.full_name?.split(" ")[0] || "";
+    return userName ? `${timeGreeting}, ${userName}` : timeGreeting;
+  }, [meQ.data?.full_name]);
 
   return (
     <SmoothScrollContainer className="h-full">
