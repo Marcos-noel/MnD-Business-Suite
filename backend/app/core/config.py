@@ -17,13 +17,13 @@ class Settings(BaseSettings):
     allowed_origins: str = "http://localhost:3000"
     frontend_base_url: str = "http://localhost:3000"
 
-    database_url: str
-    redis_url: str
+    database_url: str = "sqlite+aiosqlite:///./mnd.db"
+    redis_url: str = "redis://localhost:6379/0"
     log_level: str = "INFO"
 
     jwt_issuer: str = "mnd-business-suite"
     jwt_audience: str = "mnd-users"
-    jwt_secret_key: str
+    jwt_secret_key: str = "dev-secret-key-change-in-production"
     jwt_access_token_expires_minutes: int = 15
     jwt_refresh_token_expires_days: int = 14
 
