@@ -1,17 +1,73 @@
+# MnD Business Suite - Render Configuration
+# Optimized for Render's cloud hosting platform
+# Compatible with Render's deployment pipelines
+
 services:
   - type: web
     name: mnd-backend
     rootDir: backend
     runtime: python
     pythonVersion: "3.11"
+    
+    # Build configuration
     buildCommand: pip install -r requirements.txt
+    
+    # Start command using PORT environment variable (Render requirement)
     startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    
+    # Health check for Render's load balancer
+    healthCheckPath: /health
+    healthCheckInterval: 30
+    healthCheckTimeout: 10
+    healthCheckRetries: 3
+    
+    # Auto-scaling configuration
+    autoscaling:
+      minInstances: 1
+      maxInstances: 3
+      targetCPUPercent: 70
+    
+    # Instance configuration
+    instanceType: standard
+    instanceCount: 1
+    
     env:
       - key: ENVIRONMENT
         value: production
       - key: DEBUG
         value: "false"
-      - key: ALLOWED_ORIGINS
-        value: "*"
       - key: PYTHON_VERSION
         value: "3.11"
+      - key: LOG_LEVEL
+        value: "INFO"
+      - key: API_V1_PREFIX
+        value: "/api/v1"
+      # IMPORTANT: Update these for production
+      - key: DATABASE_URL
+        value: "postgresql+asyncpg://postgres:password@db.host:5432/postgres"
+      - key: REDIS_URL
+        value: "redis://redis.host:6379/0"
+      # IMPORTANT: Generate a secure random secret (min 32 characters)
+      - key: JWT_SECRET_KEY
+        value: "CHANGE_ME_TO_A_LONG_RANDOM_SECRET_IN_PRODUCTION"
+      - key: JWT_ISSUER
+        value: "mnd-business-suite"
+      - key: JWT_AUDIENCE
+        value: "mnd-users"
+      - key: JWT_ACCESS_TOKEN_EXPIRES_MINUTES
+        value: "15"
+      - key: JWT_REFRESH_TOKEN_EXPIRES_DAYS
+        value: "14"
+      - key: PASSWORD_BCRYPT_ROUNDS
+        value: "12"
+      - key: RATE_LIMIT_DEFAULT
+        value: "100/minute"
+      # Update with your actual Vercel frontend URL
+      - key: ALLOWED_ORIGINS
+        value: "https://your-frontend.vercel.app"
+      - key: FRONTEND_BASE_URL
+        value: "https://your-frontend.vercel.app"
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: COOKIE_SAMESITE
+        value: "none"
