@@ -64,9 +64,9 @@ services:
         value: "100/minute"
       # Update with your actual Vercel frontend URL
       - key: ALLOWED_ORIGINS
-        value: "https://your-frontend.vercel.app"
+        value: "https://mn-d-business-suite-4ftg.vercel.app"
       - key: FRONTEND_BASE_URL
-        value: "https://your-frontend.vercel.app"
+        value: "https://mn-d-business-suite-4ftg.vercel.app"
       - key: COOKIE_SECURE
         value: "true"
       - key: COOKIE_SAMESITE
