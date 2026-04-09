@@ -5,15 +5,30 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: "hsl(var(--c-bg))",
-        surface: "hsl(var(--c-surface))",
-        "surface-2": "hsl(var(--c-surface-2))",
-        border: "hsl(var(--c-border))",
-        fg: "hsl(var(--c-text))",
-        muted: "hsl(var(--c-muted))",
-        "muted-2": "hsl(var(--c-muted-2))",
-        accent: "hsl(var(--c-accent))",
-        "accent-2": "hsl(var(--c-accent-2))",
+        primary: {
+          DEFAULT: "#2563EB",
+          hover: "#1D4ED8",
+          50: "#EFF6FF",
+          100: "#DBEAFE",
+          200: "#BFDBFE",
+          500: "#2563EB",
+          600: "#1D4ED8",
+          700: "#1E40AF"
+        },
+        bg: {
+          DEFAULT: "#FFFFFF",
+          light: "#F9FAFB"
+        },
+        fg: {
+          DEFAULT: "#111827",
+          muted: "#6B7280"
+        },
+        border: {
+          DEFAULT: "#E5E7EB",
+          input: "#D1D5DB"
+        },
+        success: "#10B981",
+        error: "#EF4444",
         danger: "hsl(var(--c-danger))"
       },
       borderRadius: {

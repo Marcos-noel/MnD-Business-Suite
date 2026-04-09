@@ -14,18 +14,18 @@ export function Button({ className, variant = "primary", size = "md", ...props }
       whileTap={{ scale: 0.98 }}
       whileHover={{ y: -1 }}
       className={cn(
-        "focus-ring inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 ease-ease-out",
+        "focus-ring inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition duration-200 ease-ease-out",
         size === "sm" && "h-9 px-3 text-sm",
         size === "md" && "h-10 px-4 text-sm",
-        size === "lg" && "h-12 px-5 text-base",
+        size === "lg" && "h-11 px-5 text-base",
         variant === "primary" &&
-          "bg-[hsl(var(--c-text))] text-[hsl(var(--c-bg))] shadow-pop hover:opacity-95",
+          "bg-black text-white shadow-sm hover:opacity-90",
         variant === "secondary" &&
-          "surface-2 text-[hsl(var(--c-text))] shadow-elevate hover:shadow-pop",
+          "bg-bg text-fg border border-border shadow-sm hover:bg-bg-light hover:shadow",
         variant === "ghost" &&
-          "hairline bg-transparent text-[hsl(var(--c-text))] hover:bg-[color-mix(in_oklab,hsl(var(--c-surface))_55%,transparent)]",
+          "bg-transparent text-fg hover:bg-bg-light",
         variant === "destructive" &&
-          "bg-[hsl(var(--c-danger))] text-white shadow-pop hover:opacity-95",
+          "bg-error text-white shadow-sm hover:opacity-90",
         className
       )}
       {...props}

@@ -9,6 +9,8 @@ A comprehensive full-stack SaaS platform serving as a direct competitor to Micro
 - **Cross-Application SSO**: Single sign-on across all applications
 - **Role-Based Access Control**: Granular permissions per application and user role
 - **Stripe Integration**: Multi-tier subscription billing with payment processing
+- **Predictive Analytics**: Advanced forecasting + anomaly detection across finance and commerce
+- **Marketing APIs**: Dynamic landing, pricing, demo, and contact endpoints
 
 ### Available Modules
 
@@ -142,12 +144,18 @@ STRIPE_PUBLISHABLE_KEY=pk_test_...
 ENVIRONMENT=development
 ALLOWED_ORIGINS=http://localhost:3000
 FRONTEND_URL=http://localhost:3000
+
+# FX Rates (Open Exchange Rates)
+FX_API_BASE=https://openexchangerates.org/api
+FX_API_KEY=your_api_key_here
+FX_REFRESH_MINUTES=60
 ```
 
 ### Frontend (.env.local)
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:3000/api/v1
+BACKEND_URL=http://localhost:8000
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 ```
 

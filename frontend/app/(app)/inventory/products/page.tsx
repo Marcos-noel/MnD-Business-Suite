@@ -46,9 +46,47 @@ export default function ProductsPage() {
     reorder_level: 10,
     unit_cost: 0,
     sell_price: 0,
-    currency: "USD",
+    currency: "KES",
     is_published: false
   });
+
+  // Validation state
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+  function validateForm(): boolean {
+    const errors: Record<string, string> = {};
+    // SKU is optional - will be auto-generated if empty
+    if (form.sku.length > 60) {
+      errors.sku = "SKU must be 60 characters or less";
+    }
+    if (!form.name.trim()) {
+      errors.name = "Product name is required";
+    } else if (form.name.length < 2) {
+      errors.name = "Name must be at least 2 characters";
+    } else if (form.name.length > 200) {
+      errors.name = "Name must be 200 characters or less";
+    }
+    if (form.unit_cost < 0) {
+      errors.unit_cost = "Unit cost cannot be negative";
+    }
+    if (form.sell_price < 0) {
+      errors.sell_price = "Sell price cannot be negative";
+    }
+    if (form.reorder_level < 0) {
+      errors.reorder_level = "Reorder level cannot be negative";
+    }
+    if (!form.currency || form.currency.length !== 3) {
+      errors.currency = "Currency must be 3-letter code (e.g., KES, USD)";
+    }
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
+  function clearFieldError(field: string) {
+    const newErrors = { ...validationErrors };
+    delete newErrors[field];
+    setValidationErrors(newErrors);
+  }
 
   async function load({ reset }: { reset: boolean }) {
     try {
@@ -79,6 +117,10 @@ export default function ProductsPage() {
   }, []);
 
   async function create() {
+    // Validate before sending
+    if (!validateForm()) {
+      return; // Don't submit if validation fails
+    }
     try {
       setError(null);
       await api("inventory/products", { method: "POST", body: JSON.stringify(form) });
@@ -91,9 +133,10 @@ export default function ProductsPage() {
         reorder_level: 10,
         unit_cost: 0,
         sell_price: 0,
-        currency: "USD",
+        currency: "KES",
         is_published: false
       });
+      setValidationErrors({});
       await load({ reset: true });
     } catch (e) {
       setError((e as Error).message);
@@ -159,36 +202,68 @@ export default function ProductsPage() {
         </a>
       </div>
 
-      {error && <Card className="border border-red-500/30 bg-red-500/10 text-sm">{error}</Card>}
+      {error && <Card className="border border-red-500/30 bg-red-500/10 text-sm text-red-600">{error}</Card>}
 
       <Card>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-8">
-          <Input placeholder="SKU" value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} />
-          <Input placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+          <div>
+            <Input 
+              placeholder="SKU *" 
+              value={form.sku} 
+              onChange={(e) => { setForm({ ...form, sku: e.target.value }); clearFieldError("sku"); }} 
+              className={validationErrors.sku ? "border-red-500" : ""}
+            />
+            {validationErrors.sku && <div className="text-xs text-red-500 mt-1">{validationErrors.sku}</div>}
+          </div>
+          <div>
+            <Input 
+              placeholder="Name *" 
+              value={form.name} 
+              onChange={(e) => { setForm({ ...form, name: e.target.value }); clearFieldError("name"); }} 
+              className={validationErrors.name ? "border-red-500" : ""}
+            />
+            {validationErrors.name && <div className="text-xs text-red-500 mt-1">{validationErrors.name}</div>}
+          </div>
           <Input placeholder="Unit" value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} />
-          <Input
-            placeholder="Reorder"
-            type="number"
-            value={form.reorder_level}
-            onChange={(e) => setForm({ ...form, reorder_level: Number(e.target.value) })}
-          />
-          <Input
-            placeholder="Unit cost"
-            type="number"
-            value={form.unit_cost}
-            onChange={(e) => setForm({ ...form, unit_cost: Number(e.target.value) })}
-          />
-          <Input
-            placeholder="Sell price"
-            type="number"
-            value={form.sell_price}
-            onChange={(e) => setForm({ ...form, sell_price: Number(e.target.value) })}
-          />
-          <Input
-            placeholder="Currency"
-            value={form.currency}
-            onChange={(e) => setForm({ ...form, currency: e.target.value.toUpperCase().slice(0, 3) })}
-          />
+          <div>
+            <Input
+              placeholder="Reorder"
+              type="number"
+              value={form.reorder_level}
+              onChange={(e) => { setForm({ ...form, reorder_level: Number(e.target.value) }); clearFieldError("reorder_level"); }}
+              className={validationErrors.reorder_level ? "border-red-500" : ""}
+            />
+            {validationErrors.reorder_level && <div className="text-xs text-red-500 mt-1">{validationErrors.reorder_level}</div>}
+          </div>
+          <div>
+            <Input
+              placeholder="Unit cost"
+              type="number"
+              value={form.unit_cost}
+              onChange={(e) => { setForm({ ...form, unit_cost: Number(e.target.value) }); clearFieldError("unit_cost"); }}
+              className={validationErrors.unit_cost ? "border-red-500" : ""}
+            />
+            {validationErrors.unit_cost && <div className="text-xs text-red-500 mt-1">{validationErrors.unit_cost}</div>}
+          </div>
+          <div>
+            <Input
+              placeholder="Sell price"
+              type="number"
+              value={form.sell_price}
+              onChange={(e) => { setForm({ ...form, sell_price: Number(e.target.value) }); clearFieldError("sell_price"); }}
+              className={validationErrors.sell_price ? "border-red-500" : ""}
+            />
+            {validationErrors.sell_price && <div className="text-xs text-red-500 mt-1">{validationErrors.sell_price}</div>}
+          </div>
+          <div>
+            <Input
+              placeholder="Currency"
+              value={form.currency}
+              onChange={(e) => { setForm({ ...form, currency: e.target.value.toUpperCase().slice(0, 3) }); clearFieldError("currency"); }}
+              className={validationErrors.currency ? "border-red-500" : ""}
+            />
+            {validationErrors.currency && <div className="text-xs text-red-500 mt-1">{validationErrors.currency}</div>}
+          </div>
           <Button onClick={create}>Add</Button>
         </div>
       </Card>

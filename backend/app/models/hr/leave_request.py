@@ -20,7 +20,7 @@ class LeaveRequest(TenantScopedBase):
     reason: Mapped[str] = mapped_column(String(500), default="")
 
     status: Mapped[str] = mapped_column(String(20), default="pending")  # pending/approved/rejected/canceled
-    reviewed_by_user_id: Mapped[str | None] = mapped_column(String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    reviewed_by_user_id: Mapped[str | None] = mapped_column(String(36), ForeignKey("auth_users.id", ondelete="SET NULL"), nullable=True)
     reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     decision_note: Mapped[str] = mapped_column(String(500), default="")
 

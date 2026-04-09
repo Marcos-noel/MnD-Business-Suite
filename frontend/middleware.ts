@@ -1,10 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/api/auth/login", "/api/auth/refresh", "/store"];
+const PUBLIC_PATHS = [
+  "/",
+  "/login",
+  "/subscription",
+  "/demo",
+  "/contact",
+  "/api/auth/login",
+  "/api/auth/refresh",
+  "/store"
+];
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p))) return NextResponse.next();
+  const isPublic = PUBLIC_PATHS.some((p) =>
+    p === "/" ? pathname === "/" : pathname === p || pathname.startsWith(p)
+  );
+  if (isPublic) return NextResponse.next();
 
   const access = req.cookies.get("access_token")?.value;
   if (!access && !pathname.startsWith("/_next") && !pathname.startsWith("/api")) {

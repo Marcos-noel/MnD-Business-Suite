@@ -5,10 +5,10 @@ import Link from "next/link";
 import { LogOut, Moon, PanelLeftOpen, Search, Sun } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { IconButton } from "@/components/ui/IconButton";
-import { Input } from "@/components/ui/Input";
 import { useTheme } from "@/lib/theme";
 import { AppLauncher } from "@/components/layout/AppLauncher";
 import { useMe } from "@/lib/me";
+import { CommandPaletteModal, SmartAlerts } from "@/components/command-center";
 
 export function TopNav({ onOpenMenu }: { onOpenMenu?: () => void }) {
   const router = useRouter();
@@ -39,13 +39,10 @@ export function TopNav({ onOpenMenu }: { onOpenMenu?: () => void }) {
           <img src="/brand/mnd-symbol.svg" alt="MnD" className="h-7 w-7" />
         </Link>
         <AppLauncher me={meQ.data ?? null} />
-        <Search className="h-4 w-4 text-[hsl(var(--c-muted-2))]" />
-        <Input
-          placeholder="Search (customers, products, orders...)"
-          className="hidden h-10 min-w-0 bg-white/0 md:block"
-        />
+        <CommandPaletteModal />
       </div>
       <div className="flex items-center gap-2">
+        <SmartAlerts />
         {meQ.data?.full_name && (
           <div className="hidden text-sm text-[hsl(var(--c-muted-2))] md:block">{meQ.data.full_name}</div>
         )}

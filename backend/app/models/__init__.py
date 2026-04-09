@@ -1,5 +1,6 @@
-from app.models.ai_assistant import *  # noqa: F403
 from app.models.auth import *  # noqa: F403
+from app.models.tenancy import *  # noqa: F403
+from app.models.ai_assistant import *  # noqa: F403
 from app.models.crm import *  # noqa: F403
 from app.models.commerce import *  # noqa: F403
 from app.models.erp import *  # noqa: F403
@@ -7,4 +8,4 @@ from app.models.export_mgmt import *  # noqa: F403
 from app.models.finance import *  # noqa: F403
 from app.models.hr import *  # noqa: F403
 from app.models.inventory import *  # noqa: F403
-from app.models.tenancy import *  # noqa: F403
+from app.models.marketing import *  # noqa: F403

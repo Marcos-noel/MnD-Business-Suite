@@ -10,6 +10,7 @@ from app.schemas.assistant.chat import (
     ChatRequest,
     ChatResponse,
     ForecastResponse,
+    PredictiveAnalyticsResponse,
     RecommendationsResponse,
 )
 from app.services.assistant.assistant_service import AssistantService
@@ -41,3 +42,12 @@ async def analytics(session: DbSession, auth: CurrentAuth) -> AnalyticsResponse:
     data = await AssistantService(session).analytics(org_id=auth.org_id)
     return AnalyticsResponse(**data)
 
+
+@router.get(
+    "/predictive",
+    response_model=PredictiveAnalyticsResponse,
+    dependencies=[require_permission("assistant.use")],
+)
+async def predictive(session: DbSession, auth: CurrentAuth) -> PredictiveAnalyticsResponse:
+    data = await AssistantService(session).predictive_analytics(org_id=auth.org_id)
+    return PredictiveAnalyticsResponse(**data)

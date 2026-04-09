@@ -42,7 +42,7 @@ export function getNavItems(me: Me | null): NavItem[] {
     { href: "/finance/transactions", label: "Finance", icon: IconFinance, module: "finance", anyPerms: ["finance.manage"], colors: { a: "#38BDF8", b: "#0EA5E9" } },
     { href: "/exports/orders", label: "Exports", icon: IconExports, module: "exports", anyPerms: ["export.manage"], colors: { a: "#60A5FA", b: "#A78BFA" } },
     { href: "/exports/readiness", label: "Readiness", icon: IconReadiness, module: "exports", anyPerms: ["export.manage"], colors: { a: "#F472B6", b: "#A78BFA" } },
-    { href: "/store/demo", label: "Storefront", icon: IconStorefront, module: "commerce", anyPerms: ["inventory.read", "inventory.manage", "commerce.manage"], colors: { a: "#22D3EE", b: "#6366F1" } },
+    { href: me?.org_slug ? `/store/${me.org_slug}` : "/store", label: "Storefront", icon: IconStorefront, module: "commerce", anyPerms: ["inventory.read", "inventory.manage", "commerce.manage"], colors: { a: "#22D3EE", b: "#6366F1" } },
     { href: "/assistant", label: "Assistant", icon: IconAssistant, module: "assistant", anyPerms: ["assistant.use"], colors: { a: "#22D3EE", b: "#A855F7" } },
     { href: "/admin/users", label: "Admin", icon: IconAdmin, module: "admin", anyPerms: ["users.manage"], colors: { a: "#94A3B8", b: "#64748B" } },
     { href: "/admin/subscriptions", label: "Subscriptions", icon: IconAdmin, module: "admin", anyPerms: ["rbac.manage"], colors: { a: "#94A3B8", b: "#64748B" } }

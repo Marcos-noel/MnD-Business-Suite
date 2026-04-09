@@ -21,6 +21,11 @@ class InventoryService(BaseService):
         return await SupplierRepository(self.session).list(org_id=org_id, limit=limit, offset=offset)
 
     async def create_product(self, *, org_id: str, data: dict) -> Product:
+        # Auto-generate SKU if not provided
+        if not data.get("sku"):
+            import uuid
+            prefix = data.get("name", "PROD")[:3].upper()
+            data["sku"] = f"{prefix}-{uuid.uuid4().hex[:6].upper()}"
         product = Product(org_id=org_id, **data)
         created = await ProductRepository(self.session).create(product)
         await self.publish("inventory.product_created", {"org_id": org_id, "product_id": created.id})

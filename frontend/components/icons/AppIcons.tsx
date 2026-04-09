@@ -141,6 +141,10 @@ export function IconPlus({ className }: Props) {
   return <Plus className={cn("h-5 w-5", className)} />;
 }
 
+export function IconMinus({ className }: Props) {
+  return <Minus className={cn("h-5 w-5", className)} />;
+}
+
 export function IconEdit({ className }: Props) {
   return <Pencil className={cn("h-5 w-5", className)} />;
 }

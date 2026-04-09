@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import asyncio
+
 from fastapi import FastAPI
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.router import api_router_v1
@@ -13,6 +16,7 @@ from app.core.observability import init_logging, install_request_logging
 from app.core.rate_limit import init_rate_limiting
 from app.core.security_headers import SecurityHeadersMiddleware
 from app.core.subscribers import init_subscribers
+from app.core.fx_cache import start_fx_refresh_loop
 
 
 def create_app() -> FastAPI:
@@ -39,6 +43,7 @@ def create_app() -> FastAPI:
     )
 
     app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(GZipMiddleware, minimum_size=800)
 
     init_rate_limiting(app)
     install_request_logging(app)
@@ -52,6 +57,7 @@ def create_app() -> FastAPI:
     async def _startup() -> None:
         await init_models()
         await init_cache()
+        app.state.fx_task = asyncio.create_task(start_fx_refresh_loop())
 
     @app.get("/")
     async def _root() -> dict:

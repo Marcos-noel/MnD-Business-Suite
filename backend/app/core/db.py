@@ -37,6 +37,7 @@ async def init_models() -> None:
         finance,
         hr,
         inventory,
+        marketing,
         tenancy,
     )
 

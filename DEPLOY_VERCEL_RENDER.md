@@ -75,6 +75,7 @@ COOKIE_SAMESITE="none"
 After deployment, go to **Settings** → **Environment Variables** and add:
 
 ```
+BACKEND_URL="https://mnd-backend.onrender.com"
 NEXT_PUBLIC_BACKEND_URL="https://mnd-backend.onrender.com"
 COOKIE_SECURE=true
 NODE_ENV=production

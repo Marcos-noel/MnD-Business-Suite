@@ -32,3 +32,33 @@ class AnalyticsResponse(BaseModel):
     pipeline_value: float
     low_stock_skus: list[str]
 
+
+class PredictivePoint(BaseModel):
+    date: str
+    value: float
+
+
+class PredictiveSeries(BaseModel):
+    metric: str
+    history: list[PredictivePoint]
+    forecast: list[PredictivePoint]
+
+
+class PredictiveAnomaly(BaseModel):
+    date: str
+    metric: str
+    value: float
+    severity: float
+
+
+class PredictiveModelInfo(BaseModel):
+    model: str
+    confidence: float
+    coverage_days: int
+    notes: str
+
+
+class PredictiveAnalyticsResponse(BaseModel):
+    series: list[PredictiveSeries]
+    anomalies: list[PredictiveAnomaly]
+    model_info: PredictiveModelInfo

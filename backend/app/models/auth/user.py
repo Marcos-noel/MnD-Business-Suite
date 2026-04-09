@@ -7,7 +7,7 @@ from app.models.base import TenantScopedBase
 
 
 class User(TenantScopedBase):
-    __tablename__ = "users"
+    __tablename__ = "auth_users"
     __table_args__ = (UniqueConstraint("org_id", "email", name="uq_org_email"),)
 
     email: Mapped[str] = mapped_column(String(255), index=True)

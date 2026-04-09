@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { IconTrendingUp, IconTrendingDown, IconBox, IconInventory, IconHR, IconOrders, IconFinance } from "@/components/icons/AppIcons";
 import { Card } from "@/components/ui/Card";
@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/Button";
 import { useMe } from "@/lib/me";
 import { getNavItems } from "@/components/layout/nav";
 import { cn } from "@/lib/cn";
-import { formatCurrency } from "@/lib/format";
+import { useLocale } from "@/lib/locale";
+import { AICommandCenter, QuickActionsFloating, RecentActivity } from "@/components/command-center";
 import {
   AreaChart,
   Area,
@@ -22,7 +23,7 @@ import {
   Bar,
   PieChart,
   Pie,
-  Cell,
+  Cell
 } from "recharts";
 
 const CHART_COLORS = {
@@ -35,38 +36,10 @@ const CHART_COLORS = {
   pink: "#EC4899"
 };
 
-const revenueData = [
-  { month: "Jan", revenue: 4200, expenses: 2800 },
-  { month: "Feb", revenue: 5100, expenses: 3100 },
-  { month: "Mar", revenue: 4800, expenses: 2900 },
-  { month: "Apr", revenue: 6200, expenses: 3400 },
-  { month: "May", revenue: 5800, expenses: 3200 },
-  { month: "Jun", revenue: 7200, expenses: 3800 },
-];
-
-const orderData = [
-  { name: "Mon", orders: 24, value: 1200 },
-  { name: "Tue", orders: 31, value: 1580 },
-  { name: "Wed", orders: 28, value: 1420 },
-  { name: "Thu", orders: 35, value: 1890 },
-  { name: "Fri", orders: 42, value: 2200 },
-  { name: "Sat", orders: 18, value: 890 },
-  { name: "Sun", orders: 12, value: 560 },
-];
-
-const inventoryData = [
-  { name: "Coffee Beans", stock: 85, threshold: 20 },
-  { name: "Tea Leaves", stock: 72, threshold: 30 },
-  { name: "Packaging", stock: 45, threshold: 50 },
-  { name: "Supplies", stock: 93, threshold: 25 },
-];
-
-const departmentData = [
-  { name: "Operations", value: 35, color: CHART_COLORS.primary },
-  { name: "Sales", value: 28, color: CHART_COLORS.secondary },
-  { name: "Finance", value: 20, color: CHART_COLORS.tertiary },
-  { name: "HR", value: 17, color: CHART_COLORS.success },
-];
+type RevenuePoint = { month: string; revenue: number; expenses: number };
+type OrderPoint = { name: string; orders: number; value: number };
+type PiePoint = { name: string; value: number; color: string };
+type StockPoint = { name: string; stock: number; threshold: number };
 
 function AppTile({
   href,
@@ -148,7 +121,10 @@ function StatCard({
   );
 }
 
-function RevenueChart() {
+function RevenueChart({ data }: { data: RevenuePoint[] }) {
+  const trend = data.length > 1
+    ? ((data[data.length - 1].revenue - data[data.length - 2].revenue) / Math.max(data[data.length - 2].revenue, 1)) * 100
+    : 0;
   return (
     <Card className="p-5">
       <div className="mb-4 flex items-center justify-between">
@@ -156,11 +132,11 @@ function RevenueChart() {
           <div className="text-sm font-semibold tracking-tight">Revenue Overview</div>
           <div className="text-xs text-[hsl(var(--c-muted-2))]">Monthly performance</div>
         </div>
-        <Badge variant="accent">+18.2%</Badge>
+        <Badge variant="accent">{trend >= 0 ? `+${trend.toFixed(1)}%` : `${trend.toFixed(1)}%`}</Badge>
       </div>
       <div className="h-[200px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+          <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={CHART_COLORS.primary} stopOpacity={0.3} />
@@ -220,7 +196,10 @@ function RevenueChart() {
   );
 }
 
-function OrdersChart() {
+function OrdersChart({ data }: { data: OrderPoint[] }) {
+  const trend = data.length > 1
+    ? ((data[data.length - 1].orders - data[data.length - 2].orders) / Math.max(data[data.length - 2].orders, 1)) * 100
+    : 0;
   return (
     <Card className="p-5">
       <div className="mb-4 flex items-center justify-between">
@@ -228,11 +207,11 @@ function OrdersChart() {
           <div className="text-sm font-semibold tracking-tight">Weekly Orders</div>
           <div className="text-xs text-[hsl(var(--c-muted-2))]">Order volume by day</div>
         </div>
-        <Badge variant="success">+12.5%</Badge>
+        <Badge variant="success">{trend >= 0 ? `+${trend.toFixed(1)}%` : `${trend.toFixed(1)}%`}</Badge>
       </div>
       <div className="h-[200px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={orderData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+          <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--c-border))" opacity={0.3} vertical={false} />
             <XAxis
               dataKey="name"
@@ -268,19 +247,19 @@ function OrdersChart() {
   );
 }
 
-function DepartmentChart() {
+function TopProductsChart({ data }: { data: PiePoint[] }) {
   return (
     <Card className="p-5">
       <div className="mb-4">
-        <div className="text-sm font-semibold tracking-tight">Department Distribution</div>
-        <div className="text-xs text-[hsl(var(--c-muted-2))]">Employee allocation</div>
+        <div className="text-sm font-semibold tracking-tight">Top Products Mix</div>
+        <div className="text-xs text-[hsl(var(--c-muted-2))]">Revenue share</div>
       </div>
       <div className="flex items-center gap-4">
         <div className="h-[160px] w-[160px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={departmentData}
+                data={data}
                 cx="50%"
                 cy="50%"
                 innerRadius={45}
@@ -290,7 +269,7 @@ function DepartmentChart() {
                 animationDuration={1500}
                 animationEasing="ease-out"
               >
-                {departmentData.map((entry, index) => (
+                {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
@@ -306,7 +285,7 @@ function DepartmentChart() {
           </ResponsiveContainer>
         </div>
         <div className="flex-1 space-y-2">
-          {departmentData.map((dept) => (
+          {data.map((dept) => (
             <div key={dept.name} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: dept.color }} />
@@ -321,7 +300,8 @@ function DepartmentChart() {
   );
 }
 
-function InventoryStatus() {
+function InventoryStatus({ data }: { data: StockPoint[] }) {
+  const lowCount = data.filter((item) => item.stock < item.threshold).length;
   return (
     <Card className="p-5">
       <div className="mb-4 flex items-center justify-between">
@@ -329,10 +309,10 @@ function InventoryStatus() {
           <div className="text-sm font-semibold tracking-tight">Inventory Status</div>
           <div className="text-xs text-[hsl(var(--c-muted-2))]">Stock levels</div>
         </div>
-        <Badge variant="warning">2 Low</Badge>
+        <Badge variant="warning">{lowCount} Low</Badge>
       </div>
       <div className="space-y-3">
-        {inventoryData.map((item) => (
+        {data.map((item) => (
           <div key={item.name}>
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-medium">{item.name}</span>
@@ -367,6 +347,106 @@ function SmoothScrollContainer({ children, className }: { children: React.ReactN
 
 export default function DashboardPage() {
   const meQ = useMe();
+  const { formatCurrency } = useLocale();
+  const [revenueData, setRevenueData] = useState<RevenuePoint[]>([]);
+  const [orderData, setOrderData] = useState<OrderPoint[]>([]);
+  const [topProducts, setTopProducts] = useState<PiePoint[]>([]);
+  const [stockData, setStockData] = useState<StockPoint[]>([]);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalEmployees, setTotalEmployees] = useState(0);
+  const [inventoryCount, setInventoryCount] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchJson = async <T,>(url: string): Promise<T | null> => {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) return null;
+        return (await res.json()) as T;
+      } catch {
+        return null;
+      }
+    };
+
+    const buildRevenueSeries = (series: { day: string; revenue: number; expenses: number }[]) => {
+      return series.map((point) => {
+        const d = new Date(point.day);
+        return {
+          month: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+          revenue: point.revenue,
+          expenses: point.expenses
+        };
+      });
+    };
+
+    const buildOrderSeries = (series: { date: string; orders: number; revenue: number }[]) => {
+      return series.slice(-7).map((point) => {
+        const d = new Date(point.date);
+        return {
+          name: d.toLocaleDateString("en-US", { weekday: "short" }),
+          orders: point.orders,
+          value: point.revenue
+        };
+      });
+    };
+
+    const buildTopProducts = (items: { product_name: string; amount: number }[]) => {
+      const total = items.reduce((sum, item) => sum + item.amount, 0) || 1;
+      return items.slice(0, 4).map((item, idx) => ({
+        name: item.product_name,
+        value: Math.round((item.amount / total) * 100),
+        color: Object.values(CHART_COLORS)[idx % Object.values(CHART_COLORS).length]
+      }));
+    };
+
+    const buildStockData = (levels: { name: string; on_hand: number; reorder_level: number }[]) => {
+      return levels.slice(0, 4).map((item) => ({
+        name: item.name,
+        stock: item.reorder_level === 0 ? 100 : Math.min(100, Math.round((item.on_hand / item.reorder_level) * 100)),
+        threshold: 35
+      }));
+    };
+
+    const load = async () => {
+      const [overview, sales, revenueSummary, stockLevels, employees] = await Promise.all([
+        fetchJson<{ series: { day: string; revenue: number; expenses: number }[]; top_products: { product_name: string; amount: number }[] }>(
+          "/api/proxy/analytics/overview?days=60"
+        ),
+        fetchJson<{ date: string; orders: number; revenue: number }[]>("/api/proxy/analytics/sales?days=30"),
+        fetchJson<{ total_revenue: number; total_orders: number }>("/api/proxy/analytics/revenue?days=30"),
+        fetchJson<{ name: string; on_hand: number; reorder_level: number }[]>("/api/proxy/inventory/stock/levels"),
+        fetchJson<any[]>("/api/proxy/hr/employees?limit=50")
+      ]);
+
+      if (cancelled) return;
+
+      if (overview) {
+        setRevenueData(buildRevenueSeries(overview.series));
+        setTopProducts(buildTopProducts(overview.top_products));
+      }
+      if (sales) {
+        setOrderData(buildOrderSeries(sales));
+      }
+      if (revenueSummary) {
+        setTotalRevenue(revenueSummary.total_revenue);
+        setTotalOrders(revenueSummary.total_orders);
+      }
+      if (stockLevels) {
+        setStockData(buildStockData(stockLevels));
+        setInventoryCount(stockLevels.length);
+      }
+      if (employees) {
+        setTotalEmployees(employees.length);
+      }
+    };
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const apps = useMemo(() => {
     const items = getNavItems(meQ.data ?? null);
     return items.filter((i) => !i.href.startsWith("/admin") && i.href !== "/dashboard");
@@ -408,35 +488,38 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* AI Command Center - Hero Panel */}
+        <AICommandCenter />
+
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Total Revenue"
-            value="KES 4.8M"
-            change="+18.2% from last month"
+            value={formatCurrency(totalRevenue)}
+            change="Latest 30-day total"
             changeType="up"
             icon={IconFinance}
             color={CHART_COLORS.primary}
           />
           <StatCard
             title="Active Orders"
-            value="156"
-            change="+12.5% from last week"
+            value={totalOrders.toLocaleString()}
+            change="Paid orders in 30 days"
             changeType="up"
             icon={IconOrders}
             color={CHART_COLORS.secondary}
           />
           <StatCard
             title="Inventory Items"
-            value="2,847"
-            change="-3 from yesterday"
-            changeType="down"
+            value={inventoryCount.toLocaleString()}
+            change="Tracked stock items"
+            changeType="up"
             icon={IconBox}
             color={CHART_COLORS.tertiary}
           />
           <StatCard
             title="Total Employees"
-            value="42"
-            change="+2 this month"
+            value={totalEmployees.toLocaleString()}
+            change="Active team size"
             changeType="up"
             icon={IconHR}
             color={CHART_COLORS.success}
@@ -444,13 +527,13 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid gap-4 lg:grid-cols-2">
-          <RevenueChart />
-          <OrdersChart />
+          <RevenueChart data={revenueData} />
+          <OrdersChart data={orderData} />
         </div>
 
         <div className="grid gap-4 lg:grid-cols-2">
-          <DepartmentChart />
-          <InventoryStatus />
+          <TopProductsChart data={topProducts} />
+          <InventoryStatus data={stockData} />
         </div>
 
         <div className="lg:hidden">
@@ -501,7 +584,13 @@ export default function DashboardPage() {
             </div>
           </Card>
         </div>
+
+        {/* Recent Activity Feed */}
+        <RecentActivity />
       </div>
+
+      {/* Floating Quick Actions */}
+      <QuickActionsFloating />
     </SmoothScrollContainer>
   );
 }

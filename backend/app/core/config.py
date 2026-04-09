@@ -38,6 +38,11 @@ class Settings(BaseSettings):
     stripe_publishable_key: str = ""
     stripe_webhook_secret: str = ""
 
+    # FX Rates
+    fx_api_base: str = "https://openexchangerates.org/api"
+    fx_api_key: str = ""
+    fx_refresh_minutes: int = 60
+
     # Frontend URL for redirects
     frontend_url: str = "http://localhost:3000"
 

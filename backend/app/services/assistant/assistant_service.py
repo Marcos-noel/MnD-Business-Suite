@@ -28,3 +28,5 @@ class AssistantService(BaseService):
     async def analytics(self, *, org_id: str) -> dict:
         return await self.provider.analytics(org_id=org_id)
 
+    async def predictive_analytics(self, *, org_id: str) -> dict:
+        return await self.provider.predictive_analytics(org_id=org_id)

@@ -6,7 +6,7 @@ from app.schemas.common import APIModel, Timestamped
 
 
 class ProductCreate(APIModel):
-    sku: str = Field(min_length=1, max_length=60)
+    sku: str = Field(default="", max_length=60)  # Optional - will auto-generate if empty
     name: str = Field(min_length=2, max_length=200)
     description: str = Field(default="", max_length=5000)
     image_url: str = Field(default="", max_length=500)
@@ -14,7 +14,7 @@ class ProductCreate(APIModel):
     reorder_level: int = Field(default=10, ge=0)
     unit_cost: float = Field(default=0, ge=0)
     sell_price: float = Field(default=0, ge=0)
-    currency: str = Field(default="USD", min_length=3, max_length=3)
+    currency: str = Field(default="KES", min_length=3, max_length=3)
     is_published: bool = Field(default=False)
 
 

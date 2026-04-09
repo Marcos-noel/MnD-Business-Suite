@@ -15,6 +15,7 @@ from app.api.v1.routes import (
     health,
     hr,
     inventory,
+    marketing,
     rbac,
     storefront,
 )
@@ -35,3 +36,4 @@ api_router_v1.include_router(export_mgmt.router, prefix="/exports", tags=["expor
 api_router_v1.include_router(assistant.router, prefix="/assistant", tags=["assistant"])
 api_router_v1.include_router(billing.router, prefix="/billing", tags=["billing"])
 api_router_v1.include_router(storefront.router, tags=["storefront"])
+api_router_v1.include_router(marketing.router, tags=["marketing"])

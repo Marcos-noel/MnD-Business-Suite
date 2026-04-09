@@ -59,6 +59,11 @@ class StorefrontProductRead(APIModel):
     image_url: str
     sell_price: float
     currency: str
+    is_published: bool = True
+    inventory_quantity: int = 0
+    reorder_level: int = 10
+    is_in_stock: bool = False
+    category_id: str | None = None
 
 
 class StorefrontCheckoutRequest(APIModel):

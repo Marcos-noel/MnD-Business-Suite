@@ -5,8 +5,15 @@ from app.workers.queue import get_queue
 
 
 async def _enqueue_notification(event: Event) -> None:
-    q = get_queue()
-    q.enqueue("app.workers.tasks.send_notification", event.name, event.payload)
+    try:
+        q = get_queue()
+        q.enqueue(
+            "app.workers.tasks.send_notification",
+            event.name,
+            event.payload,
+        )
+    except Exception:
+        pass  # Silently fail for background notifications
 
 
 def init_subscribers() -> None:

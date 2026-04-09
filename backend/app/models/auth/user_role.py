@@ -10,6 +10,6 @@ class UserRole(TimestampedBase):
     __tablename__ = "user_roles"
     __table_args__ = (UniqueConstraint("user_id", "role_id", name="uq_user_role"),)
 
-    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("auth_users.id", ondelete="CASCADE"), index=True)
     role_id: Mapped[str] = mapped_column(String(36), ForeignKey("roles.id", ondelete="CASCADE"), index=True)
 

@@ -9,6 +9,7 @@ from app.models.crm.opportunity import Opportunity
 from app.models.finance.transaction import Transaction
 from app.models.inventory.product import Product
 from app.models.inventory.stock_movement import StockMovement
+from app.services.assistant.predictive_analytics import PredictiveAnalyticsService
 from app.services.assistant.provider import AssistantProvider
 
 
@@ -124,28 +125,14 @@ class MockAssistantProvider(AssistantProvider):
         ]
 
     async def forecast(self, *, org_id: str) -> dict:
-        end = date.today()
-        start = end - timedelta(days=30)
-        revenue = (
-            await self.session.execute(
-                select(func.coalesce(func.sum(Transaction.amount), 0))
-                .where(Transaction.org_id == org_id)
-                .where(Transaction.kind == "revenue")
-                .where(Transaction.day >= start)
-                .where(Transaction.day <= end)
-            )
-        ).scalar_one()
-        expenses = (
-            await self.session.execute(
-                select(func.coalesce(func.sum(Transaction.amount), 0))
-                .where(Transaction.org_id == org_id)
-                .where(Transaction.kind == "expense")
-                .where(Transaction.day >= start)
-                .where(Transaction.day <= end)
-            )
-        ).scalar_one()
-        # Naive forecast: assume next 30 days equals last 30 days
-        return {"revenue_next_30d": float(revenue), "expenses_next_30d": float(expenses), "confidence": 0.55}
+        analytics = await PredictiveAnalyticsService(self.session).predictive_analytics(org_id=org_id)
+        revenue_next = sum(point["value"] for point in analytics["series"][0]["forecast"])
+        expense_next = sum(point["value"] for point in analytics["series"][1]["forecast"])
+        return {
+            "revenue_next_30d": float(revenue_next),
+            "expenses_next_30d": float(expense_next),
+            "confidence": float(analytics["model_info"]["confidence"]),
+        }
 
     async def analytics(self, *, org_id: str) -> dict:
         top_customers_res = await self.session.execute(
@@ -175,3 +162,6 @@ class MockAssistantProvider(AssistantProvider):
         low_stock_skus = list(low_stock_res.scalars().all())
 
         return {"top_customers": top_customers, "pipeline_value": float(pipeline), "low_stock_skus": low_stock_skus}
+
+    async def predictive_analytics(self, *, org_id: str) -> dict:
+        return await PredictiveAnalyticsService(self.session).predictive_analytics(org_id=org_id)

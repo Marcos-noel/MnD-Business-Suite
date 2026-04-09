@@ -28,3 +28,19 @@ class CommerceOrder(TenantScopedBase):
     payment_status: Mapped[str] = mapped_column(String(30), default="unpaid", index=True)
     payment_provider: Mapped[str] = mapped_column(String(40), default="")
     payment_reference: Mapped[str] = mapped_column(String(80), default="", index=True)
+
+    # Shipping information
+    shipping_name: Mapped[str] = mapped_column(String(200), default="")
+    shipping_phone: Mapped[str] = mapped_column(String(40), default="")
+    shipping_address_line1: Mapped[str] = mapped_column(String(255), default="")
+    shipping_address_line2: Mapped[str] = mapped_column(String(255), default="")
+    shipping_city: Mapped[str] = mapped_column(String(100), default="")
+    shipping_state: Mapped[str] = mapped_column(String(100), default="")
+    shipping_postal_code: Mapped[str] = mapped_column(String(20), default="")
+    shipping_country: Mapped[str] = mapped_column(String(3), default="KEN")
+
+    # Order timeline
+    shipped_at: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    delivered_at: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    cancelled_at: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    cancelled_reason: Mapped[str] = mapped_column(String(500), default="")

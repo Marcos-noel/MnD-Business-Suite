@@ -87,9 +87,7 @@ class AuthService(BaseService):
                 raise ConflictError("Organization or email already exists. Please try again with different details.")
 
     async def login(self, *, org_slug: str, email: str, password: str) -> tuple[User, str, str]:
-        await self._ensure_global_permissions()
         org = await OrganizationRepository(self.session).get_by_slug(org_slug)
-        await ModuleService(self.session).ensure_defaults(org_id=org.id)
         user = await UserRepository(self.session).get_by_email(org_id=org.id, email=email)
         if not user.is_active:
             raise ForbiddenError("User is inactive")
@@ -101,7 +99,7 @@ class AuthService(BaseService):
 
         family = secrets.token_urlsafe(16)
         refresh, token_hash = create_refresh_token(subject=user.id, org_id=org.id, token_family=family)
-        expires_at = datetime.now(timezone.utc) + timedelta(days=settings.jwt_refresh_token_expires_days)
+        expires_at = datetime.utcnow() + timedelta(days=settings.jwt_refresh_token_expires_days)
         await RefreshTokenRepository(self.session).create(
             RefreshToken(user_id=user.id, org_id=org.id, family=family, token_hash=token_hash, expires_at=expires_at)
         )
@@ -125,7 +123,7 @@ class AuthService(BaseService):
 
         repo = RefreshTokenRepository(self.session)
         rt = await repo.get_valid(user_id=user_id, org_id=org_id, family=family, token_hash=token_hash)
-        if rt is None or rt.expires_at < datetime.now(timezone.utc):
+        if rt is None or rt.expires_at < datetime.utcnow():
             await repo.revoke_family(user_id=user_id, family=family)
             raise UnauthorizedError("Refresh token expired or revoked")
 
@@ -135,7 +133,7 @@ class AuthService(BaseService):
 
         new_family = secrets.token_urlsafe(16)
         new_refresh, new_hash = create_refresh_token(subject=user_id, org_id=org_id, token_family=new_family)
-        expires_at = datetime.now(timezone.utc) + timedelta(days=settings.jwt_refresh_token_expires_days)
+        expires_at = datetime.utcnow() + timedelta(days=settings.jwt_refresh_token_expires_days)
         await repo.create(
             RefreshToken(user_id=user_id, org_id=org_id, family=new_family, token_hash=new_hash, expires_at=expires_at)
         )

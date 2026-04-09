@@ -156,8 +156,8 @@ const APPS: AppItem[] = [
   {
     id: "storefront",
     label: "Storefront",
-    description: "Public catalog (demo)",
-    href: "/store/demo",
+    description: "Public catalog (MnD)",
+    href: "/store/MnD",
     icon: IconStorefront,
     anyPerms: ["inventory.read", "inventory.manage", "commerce.manage"],
     module: "commerce",
@@ -202,10 +202,24 @@ export function AppLauncher({ me }: { me: Me | null }) {
   const router = useRouter();
 
   const apps = useMemo(() => {
+    const storefrontApp = me?.org_slug ? [
+      {
+        id: "storefront",
+        label: "Storefront",
+        description: `Public catalog (${me.org_slug})`,
+        href: `/store/${me.org_slug}`,
+        icon: IconStorefront,
+        anyPerms: ["inventory.read", "inventory.manage", "commerce.manage"],
+        module: "commerce",
+        colors: { a: "#22D3EE", b: "#6366F1" }
+      }
+    ] : [];
+
     const allowed = APPS.filter((a) => hasAnyPermission(me, a.anyPerms) && (!a.module || hasModule(me, a.module)));
-    if (!q.trim()) return allowed;
-    const needle = q.trim().toLowerCase();
-    return allowed.filter((a) => (a.label + " " + a.description).toLowerCase().includes(needle));
+    // Replace static storefront entry with dynamic one
+    const filtered = allowed.filter((a) => a.id !== "storefront");
+    if (!me?.org_slug) return filtered;
+    return [...filtered, ...storefrontApp];
   }, [me, q]);
 
   return (
