@@ -93,6 +93,7 @@ async def create_user(payload: UserCreateRequest, session: DbSession, auth: Curr
 
 @router.get("/me", response_model=UserMeRead)
 async def me(session: DbSession, auth: CurrentAuth) -> UserMeRead:
+    await AuthService(session).ensure_org_rbac_baseline(org_id=auth.org_id)
     org, user, roles, perms, modules = await asyncio.gather(
         OrganizationRepository(session).get(auth.org_id),
         UserRepository(session).get(org_id=auth.org_id, user_id=auth.user_id),

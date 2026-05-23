@@ -89,6 +89,7 @@ class AuthService(BaseService):
 
     async def login(self, *, org_slug: str, email: str, password: str) -> tuple[User, str, str]:
         org = await OrganizationRepository(self.session).get_by_slug(org_slug)
+        await self.ensure_org_rbac_baseline(org_id=org.id)
         user = await UserRepository(self.session).get_by_email(org_id=org.id, email=email)
         if not user.is_active:
             raise ForbiddenError("User is inactive")
@@ -106,6 +107,35 @@ class AuthService(BaseService):
         )
         await self.publish("auth.login", {"org_id": org.id, "user_id": user.id})
         return user, access, refresh
+
+    async def ensure_org_rbac_baseline(self, *, org_id: str) -> None:
+        await self._ensure_global_permissions()
+        role_repo = RoleRepository(self.session)
+        admin_role = await role_repo.get_by_name(org_id=org_id, name="admin")
+        if admin_role is not None:
+            await self._grant_all_permissions_to_role(role_id=admin_role.id)
+
+        staff_role = await role_repo.get_by_name(org_id=org_id, name="staff")
+        if staff_role is not None:
+            await self._grant_permissions_to_role(
+                role_id=staff_role.id,
+                permission_codes=[
+                    "erp.read",
+                    "hr.self",
+                    "hr.manage",
+                    "inventory.read",
+                    "crm.read",
+                    "crm.manage",
+                    "crm.quote.manage",
+                    "crm.social.manage",
+                    "crm.activity.read",
+                    "commerce.read",
+                    "finance.read",
+                    "export.read",
+                    "analytics.read",
+                    "assistant.use",
+                ],
+            )
 
     async def refresh(self, *, refresh_token: str) -> tuple[str, str]:
         try:

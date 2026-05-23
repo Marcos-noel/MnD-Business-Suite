@@ -73,6 +73,11 @@ async function handler(req: Request, ctx: { params: { path: string[] } }) {
   if (contentType.includes("application/json")) {
     const body = await res.json().catch(() => null);
     out = NextResponse.json(body, { status: res.status });
+  } else if (contentType.includes("text/event-stream")) {
+    out = new NextResponse(res.body, { status: res.status });
+    out.headers.set("content-type", "text/event-stream");
+    out.headers.set("cache-control", "no-cache");
+    out.headers.set("connection", "keep-alive");
   } else {
     const buf = await res.arrayBuffer();
     out = new NextResponse(buf, { status: res.status });

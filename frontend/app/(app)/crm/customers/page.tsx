@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -49,6 +50,20 @@ export default function CustomersPage() {
       <div>
         <div className="text-lg font-semibold">Customers</div>
         <div className="text-sm text-white/50">Keep your customer master data and interactions organized.</div>
+        <div className="mt-2 flex flex-wrap gap-2 text-sm">
+          <Link className="rounded-lg border border-white/15 px-3 py-1 text-white/80 hover:bg-white/10" href="/crm/quotes">
+            Quotes
+          </Link>
+          <Link className="rounded-lg border border-white/15 px-3 py-1 text-white/80 hover:bg-white/10" href="/crm/social">
+            Social Tracking
+          </Link>
+          <Link className="rounded-lg border border-white/15 px-3 py-1 text-white/80 hover:bg-white/10" href="/crm/activity">
+            Activity Feed
+          </Link>
+          <a className="rounded-lg border border-white/15 px-3 py-1 text-white/80 hover:bg-white/10" href="/api/proxy/crm/stream" target="_blank" rel="noreferrer">
+            Realtime Stream
+          </a>
+        </div>
       </div>
 
       {error && <Card className="border-red-500/30 bg-red-500/10 text-sm">{error}</Card>}
