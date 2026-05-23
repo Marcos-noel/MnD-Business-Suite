@@ -28,6 +28,7 @@ import {
   Search,
   Filter,
   Plus,
+  Minus,
   Pencil,
   Trash2,
   Eye,

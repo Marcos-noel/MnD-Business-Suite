@@ -144,7 +144,7 @@ export default function CheckoutPage() {
         <div className="mx-auto max-w-2xl text-center">
           <div className="mb-6 flex justify-center">
             <div className="h-20 w-20 rounded-full bg-green-100 flex items-center justify-center">
-              <Check className="h-10 w-10 text-green-600" />
+              <IconCheck className="h-10 w-10 text-green-600" />
             </div>
           </div>
           <h1 className="text-2xl font-bold">Order Placed!</h1>
@@ -171,11 +171,11 @@ export default function CheckoutPage() {
             href={`/store/${org}`}
             className="inline-flex items-center gap-1 text-sm text-[hsl(var(--c-muted-2))] hover:text-[hsl(var(--c-text))] mb-6"
           >
-            <ArrowLeft className="h-4 w-4" /> Back to Store
+            <IconArrowLeft className="h-4 w-4" /> Back to Store
           </Link>
           
           <Card className="p-12 text-center">
-            <Package className="mx-auto h-12 w-12 text-[hsl(var(--c-muted-2))]" />
+            <IconBox className="mx-auto h-12 w-12 text-[hsl(var(--c-muted-2))]" />
             <div className="mt-4 text-lg font-medium">Checkout unavailable</div>
             <div className="mt-2 text-[hsl(var(--c-muted-2))]">{error}</div>
             <Link href={`/store/${org}/cart`}>
@@ -194,7 +194,7 @@ export default function CheckoutPage() {
           href={`/store/${org}/cart`}
           className="inline-flex items-center gap-1 text-sm text-[hsl(var(--c-muted-2))] hover:text-[hsl(var(--c-text))] mb-6"
         >
-          <ArrowLeft className="h-4 w-4" /> Back to Cart
+          <IconArrowLeft className="h-4 w-4" /> Back to Cart
         </Link>
         
         <h1 className="text-2xl font-bold mb-6">Checkout</h1>

@@ -337,7 +337,7 @@ export function CommandPaletteModal() {
               <div className="max-h-[400px] overflow-y-auto p-2">
                 {filteredItems.length === 0 ? (
                   <div className="py-8 text-center text-sm text-muted">
-                    No results found for "{query}"
+                    No results found for &quot;{query}&quot;
                   </div>
                 ) : (
                   <>

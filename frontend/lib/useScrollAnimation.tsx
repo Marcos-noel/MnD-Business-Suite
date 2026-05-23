@@ -71,6 +71,8 @@ export function useScrollAnimation(options: {
     useTransform(velocity, [-3000, 0, 3000], [0.95, 1, 0.95]),
     { stiffness: 400, damping: 50 }
   );
+  const zeroX = useMotionValue(0);
+  const zeroY = useMotionValue(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -104,8 +106,8 @@ export function useScrollAnimation(options: {
   }, [scrollY, scrollYProgress, velocity]);
 
   return {
-    y: enableY ? yOffset : useMotionValue(0),
-    x: enableX ? xOffset : useMotionValue(0),
+    y: enableY ? yOffset : zeroY,
+    x: enableX ? xOffset : zeroX,
     velocityScale,
     velocityOpacity,
     scrollY,

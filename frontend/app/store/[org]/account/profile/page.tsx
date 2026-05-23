@@ -86,6 +86,16 @@ export default function AccountProfilePage() {
     router.push(`/store/${org}`);
   }
 
+  const initials = useMemo(() => {
+    if (!customer?.name) return "";
+    return customer.name
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(part => part[0]?.toUpperCase())
+      .join("");
+  }, [customer?.name]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -97,16 +107,6 @@ export default function AccountProfilePage() {
   if (!isAuthenticated || !customer) {
     return null;
   }
-
-  const initials = useMemo(() => {
-    if (!customer?.name) return "";
-    return customer.name
-      .split(" ")
-      .filter(Boolean)
-      .slice(0, 2)
-      .map(part => part[0]?.toUpperCase())
-      .join("");
-  }, [customer?.name]);
 
   const isDirty =
     customer?.name !== form.name.trim() || (customer?.phone || "") !== form.phone.trim();

@@ -472,7 +472,7 @@ export default function DashboardPage() {
               <div className="text-xl font-semibold tracking-tight">{greeting}</div>
             </div>
             <div className="mt-1 text-sm text-[hsl(var(--c-muted-2))]">
-              Here's what's happening with your business today.
+              Here&apos;s what&apos;s happening with your business today.
             </div>
           </div>
           <div className="flex items-center gap-2">
