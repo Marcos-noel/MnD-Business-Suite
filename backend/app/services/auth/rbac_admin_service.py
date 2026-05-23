@@ -25,6 +25,12 @@ class RbacAdminService(BaseService):
     async def list_permissions(self) -> list:
         return await PermissionRepository(self.session).list_all()
 
+    async def get_role_permission_codes(self, *, org_id: str, role_id: str) -> set[str]:
+        role = await RoleRepository(self.session).get(org_id=org_id, role_id=role_id)
+        if role is None:
+            raise AppError("Role not found", status_code=404, code="not_found")
+        return await RbacRepository(self.session).get_role_permission_codes(role_id=role_id)
+
     async def grant_permission(self, *, org_id: str, role_id: str, permission_code: str) -> None:
         role = await RoleRepository(self.session).get(org_id=org_id, role_id=role_id)
         if role is None:

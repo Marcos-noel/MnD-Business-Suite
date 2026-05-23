@@ -7,7 +7,7 @@ from app.schemas.common import APIModel, Timestamped
 
 class InteractionCreate(APIModel):
     customer_id: str
-    channel: str = Field(default="email", pattern=r"^(call|email|meeting)$")
+    channel: str = Field(default="email", pattern=r"^(call|email|meeting|whatsapp|facebook|instagram|linkedin|x|sms|webchat)$")
     summary: str = Field(min_length=2, max_length=500)
 
 

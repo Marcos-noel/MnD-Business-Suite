@@ -5,4 +5,5 @@ from app.models.auth.permission import Permission  # noqa: F401
 from app.models.auth.user_role import UserRole  # noqa: F401
 from app.models.auth.role_permission import RolePermission  # noqa: F401
 from app.models.auth.refresh_token import RefreshToken  # noqa: F401
+from app.models.auth.audit_event import AuditEvent  # noqa: F401
 

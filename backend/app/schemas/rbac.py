@@ -30,3 +30,8 @@ class AssignRoleRequest(BaseModel):
     user_id: str
     role_id: str
 
+
+class RolePermissionMap(APIModel):
+    role_id: str
+    permission_codes: list[str]
+

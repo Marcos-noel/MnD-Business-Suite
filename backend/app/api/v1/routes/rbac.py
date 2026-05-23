@@ -10,6 +10,7 @@ from app.schemas.rbac import (
     GrantPermissionRequest,
     PermissionRead,
     RoleCreate,
+    RolePermissionMap,
     RoleRead,
 )
 from app.services.auth.rbac_admin_service import RbacAdminService
@@ -34,6 +35,12 @@ async def create_role(payload: RoleCreate, session: DbSession, auth: CurrentAuth
 async def list_permissions(session: DbSession) -> list[PermissionRead]:
     perms = await RbacAdminService(session).list_permissions()
     return [PermissionRead.model_validate(p) for p in perms]
+
+
+@router.get("/roles/{role_id}/permissions", response_model=RolePermissionMap, dependencies=[require_permission("rbac.manage")])
+async def role_permissions(role_id: str, session: DbSession, auth: CurrentAuth) -> RolePermissionMap:
+    codes = await RbacAdminService(session).get_role_permission_codes(org_id=auth.org_id, role_id=role_id)
+    return RolePermissionMap(role_id=role_id, permission_codes=sorted(codes))
 
 
 @router.post("/grant", status_code=200, dependencies=[require_permission("rbac.manage")])

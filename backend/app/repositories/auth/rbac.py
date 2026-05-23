@@ -44,3 +44,11 @@ class RbacRepository:
         self.session.add(RolePermission(role_id=role_id, permission_id=permission_id))
         await self.session.commit()
 
+    async def get_role_permission_codes(self, *, role_id: str) -> set[str]:
+        res = await self.session.execute(
+            select(Permission.code)
+            .join(RolePermission, RolePermission.permission_id == Permission.id)
+            .where(RolePermission.role_id == role_id)
+        )
+        return set(res.scalars().all())
+

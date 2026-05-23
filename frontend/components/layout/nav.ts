@@ -45,6 +45,7 @@ export function getNavItems(me: Me | null): NavItem[] {
     { href: me?.org_slug ? `/store/${me.org_slug}` : "/store", label: "Storefront", icon: IconStorefront, module: "commerce", anyPerms: ["inventory.read", "inventory.manage", "commerce.manage"], colors: { a: "#F5F5F5", b: "#A3A3A3" } },
     { href: "/assistant", label: "Assistant", icon: IconAssistant, module: "assistant", anyPerms: ["assistant.use"], colors: { a: "#E4E4E7", b: "#71717A" } },
     { href: "/admin/users", label: "Admin", icon: IconAdmin, module: "admin", anyPerms: ["users.manage"], colors: { a: "#94A3B8", b: "#64748B" } },
+    { href: "/admin/rbac", label: "RBAC", icon: IconAdmin, module: "admin", anyPerms: ["rbac.manage"], colors: { a: "#94A3B8", b: "#64748B" } },
     { href: "/admin/subscriptions", label: "Subscriptions", icon: IconAdmin, module: "admin", anyPerms: ["rbac.manage"], colors: { a: "#94A3B8", b: "#64748B" } }
   ];
 
