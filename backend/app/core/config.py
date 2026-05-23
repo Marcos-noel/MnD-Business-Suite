@@ -76,6 +76,21 @@ class Settings(BaseSettings):
             return "lax"
         return s
 
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def _normalize_database_url(cls, v: Any) -> str:
+        if v is None:
+            return "sqlite+aiosqlite:///./mnd.db"
+        s = str(v).strip()
+        if s.startswith("postgres://"):
+            # Render often provides postgres://; async SQLAlchemy needs asyncpg.
+            return "postgresql+asyncpg://" + s[len("postgres://") :]
+        if s.startswith("postgresql://"):
+            return "postgresql+asyncpg://" + s[len("postgresql://") :]
+        if s.startswith("postgresql+psycopg2://"):
+            return "postgresql+asyncpg://" + s[len("postgresql+psycopg2://") :]
+        return s
+
 
 def should_use_secure_cookies() -> bool:
     if settings.cookie_secure:
