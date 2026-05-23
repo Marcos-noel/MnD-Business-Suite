@@ -10,7 +10,9 @@ class AuditEvent(TenantScopedBase):
     __tablename__ = "audit_events"
 
     org_id: Mapped[str] = mapped_column(String(36), ForeignKey("organizations.id", ondelete="CASCADE"), index=True)
-    actor_user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="SET NULL"), index=True)
+    actor_user_id: Mapped[str | None] = mapped_column(
+        String(36), ForeignKey("auth_users.id", ondelete="SET NULL"), nullable=True, index=True
+    )
     module: Mapped[str] = mapped_column(String(80), index=True)  # crm/rbac/finance/...
     entity_type: Mapped[str] = mapped_column(String(80), index=True)  # customer/opportunity/quote/...
     entity_id: Mapped[str] = mapped_column(String(36), default="", index=True)
