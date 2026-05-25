@@ -13,7 +13,6 @@ import { HeroCarousel } from "@/components/marketing/HeroCarousel";
 import type { LandingData } from "@/lib/marketing";
 import { useI18n } from "@/lib/i18n";
 import {
-  ArrowRight,
   House,
   ShieldCheck,
   Zap,
@@ -157,7 +156,7 @@ export function LandingClient({ landing }: { landing: LandingData }) {
               <p className="text-sm text-black/75">{personaCopy[persona]}</p>
             </div>
             <div className="grid grid-cols-1 gap-2.5 sm:flex sm:flex-row sm:gap-4">
-              <Link href="/subscription/plans"><Button size="lg" className="w-full justify-center">{t("cta_start_bundle")}<ArrowRight className="h-4 w-4" /></Button></Link>
+              <Link href="/subscription/plans"><Button size="lg" className="w-full justify-center">{t("cta_start_bundle")}<MoveRight className="h-4 w-4" /></Button></Link>
               <Link href="/store"><Button size="lg" variant="secondary" className="w-full justify-center">{t("cta_explore_storefront")}</Button></Link>
             </div>
 
