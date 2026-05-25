@@ -3,16 +3,27 @@ import { backendUrl, cookieSecure } from "@/lib/env";
 import { fetchBackend } from "@/lib/backend-fetch";
 
 export async function POST(req: Request) {
-  const body = await req.json();
-
   try {
+    const body = await req.json().catch(() => null);
+    if (!body || typeof body !== "object") {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
+    const orgSlug = typeof body.org_slug === "string" ? body.org_slug.trim().toLowerCase() : "";
+    const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+    const password = typeof body.password === "string" ? body.password : "";
+    if (!orgSlug || !email || !password) {
+      return NextResponse.json({ error: "org_slug, email, and password are required" }, { status: 400 });
+    }
+
+    const payload = { org_slug: orgSlug, email, password };
+
     const doLogin = () =>
       fetchBackend(
         `${backendUrl()}/api/v1/auth/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
+          body: JSON.stringify(payload),
         },
         25000
       );
@@ -30,6 +41,9 @@ export async function POST(req: Request) {
     const data = await res.json().catch(() => null);
     if (!res.ok) {
       return NextResponse.json(data ?? { error: "Login failed" }, { status: res.status });
+    }
+    if (!data?.access_token || !data?.refresh_token) {
+      return NextResponse.json({ error: "Invalid login response from backend" }, { status: 502 });
     }
 
     const out = NextResponse.json({ ok: true });
