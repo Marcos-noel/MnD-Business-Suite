@@ -7,7 +7,6 @@ import { api } from "@/lib/api";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Loader2 } from "lucide-react";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -38,7 +37,7 @@ export default function ProfilePage() {
   if (!me) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin" />
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-accent" />
       </div>
     );
   }
@@ -123,7 +122,7 @@ export default function ProfilePage() {
 
           {/* Save Button */}
           <Button type="submit" disabled={saving} className="w-full">
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {saving ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" /> : null}
             {saving ? "Saving..." : "Save Changes"}
           </Button>
         </form>
