@@ -17,9 +17,10 @@ export async function POST(req: Request) {
 
     const payload = { org_slug: orgSlug, email, password };
 
+    const base = backendUrl();
     const doLogin = () =>
       fetchBackend(
-        `${backendUrl()}/api/v1/auth/login`,
+        `${base}/api/v1/auth/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -38,7 +39,15 @@ export async function POST(req: Request) {
       res = await doLogin();
     }
 
-    const data = await res.json().catch(() => null);
+    const rawText = await res.text().catch(() => "");
+    let data: any = null;
+    if (rawText) {
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        data = null;
+      }
+    }
     if (!res.ok) {
       return NextResponse.json(data ?? { error: "Login failed" }, { status: res.status });
     }
@@ -71,7 +80,11 @@ export async function POST(req: Request) {
     return out;
   } catch (error) {
     const isTimeout = error instanceof Error && error.message.includes("timed out");
-    return NextResponse.json({ error: isTimeout ? "Backend request timed out" : "Login error" }, { status: isTimeout ? 504 : 502 });
+    const message = error instanceof Error ? error.message : "Unknown login proxy error";
+    return NextResponse.json(
+      { error: isTimeout ? "Backend request timed out" : "Login proxy error", detail: message },
+      { status: isTimeout ? 504 : 502 }
+    );
   }
 }
 
