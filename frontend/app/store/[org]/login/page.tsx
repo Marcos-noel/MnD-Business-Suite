@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
+import type { Route } from "next";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { CustomerUser, getStoredAuth, setStoredAuth } from "@/lib/auth";
@@ -33,7 +34,7 @@ export default function StoreLoginPage() {
   useEffect(() => {
     const auth = getStoredAuth();
     if (auth) {
-      router.replace(redirect);
+      router.replace(redirect as Route);
     }
   }, [redirect, router]);
 
@@ -72,7 +73,7 @@ export default function StoreLoginPage() {
 
       setStoredAuth({ customer, token });
 
-      router.replace(redirect);
+      router.replace(redirect as Route);
     } catch (e: unknown) {
       const errMsg = e instanceof Error ? e.message : "An error occurred";
       setError(errMsg);

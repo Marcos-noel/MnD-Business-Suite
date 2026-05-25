@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import type { Route } from "next";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -110,7 +111,7 @@ export default function CheckoutPage() {
       
       // Redirect to confirmation after a delay
       setTimeout(() => {
-        router.push(`/store/${org}/order/${data.id}?email=${encodeURIComponent(customerEmail)}`);
+        router.push(`/store/${org}/order/${data.id}?email=${encodeURIComponent(customerEmail)}` as Route);
       }, 2000);
       
     } catch (e) {

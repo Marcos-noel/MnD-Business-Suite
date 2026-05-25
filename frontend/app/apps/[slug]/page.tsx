@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Route } from "next";
 import { Button } from "@/components/ui/Button";
 import {
   Users,
@@ -24,7 +25,7 @@ const apps: Record<string, {
   benefits: string[];
   icon: ComponentType<{ className?: string }>;
   color: string;
-  route: string;
+  route: Route;
 }> = {
   hr: {
     name: "HR",

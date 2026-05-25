@@ -125,6 +125,11 @@ export async function getLandingData(): Promise<LandingData> {
         "Sales deals create inventory reservations",
         "Shipments update finance and analytics",
         "AI flags compliance risks early"
+      ],
+      carousel: [
+        { image: "/images/hero/operations.jpg", title: "Unified Operations", description: "See teams, tasks, and metrics in one command layer." },
+        { image: "/images/hero/finance.jpg", title: "Real-time Finance", description: "Track cash, approvals, and reporting from one dashboard." },
+        { image: "/images/hero/commerce.jpg", title: "Connected Commerce", description: "Link storefront, inventory, and fulfillment end-to-end." }
       ]
     };
   }

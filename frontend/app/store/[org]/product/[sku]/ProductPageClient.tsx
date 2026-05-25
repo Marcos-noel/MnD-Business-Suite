@@ -84,7 +84,7 @@ export default function ProductPageClient() {
       const variantId = selectedVariant?.id || product.variants?.[0]?.id;
       if (!variantId) return;
 
-      await addToCart(org, cartId, variantId, quantity);
+      await addToCart(org, cartId, product.id, variantId, quantity);
 
       setAddedFeedback(true);
       setTimeout(() => setAddedFeedback(false), 2000);
@@ -95,8 +95,8 @@ export default function ProductPageClient() {
     }
   }
 
-  const currentPrice = selectedVariant?.price || product?.price || 0;
-  const originalPrice = selectedVariant?.original_price || product?.original_price;
+  const currentPrice = selectedVariant?.price || product?.sell_price || 0;
+  const originalPrice = selectedVariant?.compare_at_price || product?.compare_at_price;
   const discount = originalPrice ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0;
 
   if (loading) {

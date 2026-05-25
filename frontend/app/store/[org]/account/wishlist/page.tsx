@@ -113,7 +113,8 @@ export default function WishlistPage() {
         });
         if (!cartRes.ok) throw new Error("Failed to create cart");
         const cart = await cartRes.json();
-        cartId = cart.id;
+        cartId = cart.id as string | null;
+        if (!cartId) throw new Error("Invalid cart response");
         localStorage.setItem("mnd_cart_id", cartId);
       }
 

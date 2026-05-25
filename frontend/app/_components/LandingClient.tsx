@@ -157,7 +157,7 @@ export function LandingClient({ landing }: { landing: LandingData }) {
             </div>
             <div className="grid grid-cols-1 gap-2.5 sm:flex sm:flex-row sm:gap-4">
               <Link href="/subscription/plans"><Button size="lg" className="w-full justify-center">{t("cta_start_bundle")}<MoveRight className="h-4 w-4" /></Button></Link>
-              <Link href="/store"><Button size="lg" variant="secondary" className="w-full justify-center">{t("cta_explore_storefront")}</Button></Link>
+              <Link href="/store/MnD"><Button size="lg" variant="secondary" className="w-full justify-center">{t("cta_explore_storefront")}</Button></Link>
             </div>
 
             <div className="flex flex-wrap gap-2">
