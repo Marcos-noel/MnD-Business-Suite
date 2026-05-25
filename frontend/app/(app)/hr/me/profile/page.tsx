@@ -7,7 +7,7 @@ import { api } from "@/lib/api";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Save, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -123,11 +123,7 @@ export default function ProfilePage() {
 
           {/* Save Button */}
           <Button type="submit" disabled={saving} className="w-full">
-            {saving ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Save className="h-4 w-4" />
-            )}
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {saving ? "Saving..." : "Save Changes"}
           </Button>
         </form>
