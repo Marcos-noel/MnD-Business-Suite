@@ -7,7 +7,7 @@ import { api } from "@/lib/api";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Plus, Save, Loader2 } from "lucide-react";
+import { Save, Loader2 } from "lucide-react";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -61,8 +61,8 @@ export default function ProfilePage() {
                   </div>
                 )}
               </div>
-              <label className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-accent text-white shadow-md hover:bg-accent-hover">
-                <Plus className="h-4 w-4" />
+              <label className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-accent text-base font-semibold text-white shadow-md hover:bg-accent-hover">
+                <span aria-hidden="true">+</span>
                 <input
                   type="text"
                   placeholder="Image URL"
