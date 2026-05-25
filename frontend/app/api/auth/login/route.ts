@@ -49,7 +49,11 @@ export async function POST(req: Request) {
       }
     }
     if (!res.ok) {
-      return NextResponse.json(data ?? { error: "Login failed" }, { status: res.status });
+      const fallback =
+        rawText && !data
+          ? { error: "Login failed", detail: rawText.slice(0, 800) }
+          : { error: "Login failed" };
+      return NextResponse.json(data ?? fallback, { status: res.status });
     }
     if (!data?.access_token || !data?.refresh_token) {
       return NextResponse.json({ error: "Invalid login response from backend" }, { status: 502 });
